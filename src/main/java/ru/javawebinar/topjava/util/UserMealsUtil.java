@@ -7,7 +7,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
 import java.util.*;
-import static java.lang.Boolean.*;
 
 public class UserMealsUtil {
     public static void main(String[] args) {
@@ -26,32 +25,28 @@ public class UserMealsUtil {
     }
 
     public static List<UserMealWithExcess> filteredByCycles(List<UserMeal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
-        //список сумм калорий по дням
         Map<LocalDate, Integer> sumOfDailyCalories = new HashMap<>();
-        //список еды, соответвующей параметрам фильтрации
-        List<UserMealWithExcess> filteredMeals = new ArrayList<>();
 
-        //посчитай сумму калорий за день
         for (UserMeal meal : meals) {
             sumOfDailyCalories.merge(meal.getDateTime().toLocalDate(), meal.getCalories(), Integer::sum);
         }
 
-        //отфильтруй список еды по времени
+        List<UserMealWithExcess> filteredMeals = new ArrayList<>();
+
         for (UserMeal meal : meals) {
             if (TimeUtil.isBetweenHalfOpen(meal.getDateTime().toLocalTime(), startTime, endTime)) {
-                //установи признак превышения нормы калорий за день
                 if (sumOfDailyCalories.get(meal.getDateTime().toLocalDate()) > caloriesPerDay) {
                     filteredMeals.add(new UserMealWithExcess(
                             meal.getDateTime(),
                             meal.getDescription(),
                             meal.getCalories(),
-                            TRUE));
+                            true));
                 } else {
                     filteredMeals.add(new UserMealWithExcess(
                             meal.getDateTime(),
                             meal.getDescription(),
                             meal.getCalories(),
-                            FALSE));
+                            false));
                 }
             }
         }
