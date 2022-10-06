@@ -16,11 +16,11 @@ import static ru.javawebinar.topjava.util.MealsUtil.*;
 public class MealServlet extends HttpServlet {
     private static final Logger log = getLogger(MealServlet.class);
 
-    List<MealTo> mealsTo = filteredByStreams(meals, LocalTime.of(0, 0), LocalTime.of(23, 59), CALORIES_PER_DAY);
-
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         log.debug("request meal");
+
+        List<MealTo> mealsTo = filteredByStreams(meals, LocalTime.MIN, LocalTime.MAX, CALORIES_PER_DAY);
 
         request.setAttribute("meals", mealsTo);
         getServletContext().getRequestDispatcher("/meals.jsp").forward(request, response);

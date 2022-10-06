@@ -20,20 +20,11 @@
     </thead>
     <tbody>
     <c:forEach var="meal" items="${meals}">
-    <c:set var="colorForExcess"/>
-    <c:choose>
-        <c:when test="${meal.excess == true}">
-            <${colorForExcess="red"}/>
-        </c:when>
-        <c:otherwise>
-            <${colorForExcess="green"}/>
-        </c:otherwise>
-    </c:choose>
-    <tr style="color: ${colorForExcess}"/>
+    <tr style="color: ${meal.excess?"red":"green"}"/>
         <td><fmt:parseDate value="${meal.dateTime}" pattern="yyyy-MM-dd'T'HH:mm" var="parsedDateTime" type="both"/>
-            <fmt:formatDate pattern="dd.MM.yyyy HH:mm" value="${parsedDateTime}"/></td>
-        <td><c:out value="${meal.description}"/></td>
-        <td><c:out value="${meal.calories}"/></td>
+            <fmt:formatDate pattern="yyyy-MM-dd HH:mm" value="${parsedDateTime}"/></td>
+        <td>${meal.description}</td>
+        <td>${meal.calories}</td>
     </tr>
     </c:forEach>
     </tbody>
