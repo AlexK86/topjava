@@ -5,41 +5,61 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
+import ru.javawebinar.topjava.util.UsersUtil;
 
-import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static ru.javawebinar.topjava.util.UsersUtil.users;
 
 @Repository
 public class InMemoryUserRepository implements UserRepository {
     private static final Logger log = LoggerFactory.getLogger(InMemoryUserRepository.class);
 
-    @Override
-    public boolean delete(int id) {
-        log.info("delete {}", id);
-        return true;
+    private Map<Integer, User> usersRepository = new ConcurrentHashMap<>();
+
+    private final AtomicInteger counter = new AtomicInteger(0);
+
+    {
+        users.forEach(this::save);
     }
 
     @Override
     public User save(User user) {
         log.info("save {}", user);
-        return user;
+        if (user.isNew()) {
+            user.setId(counter.incrementAndGet());
+            usersRepository.put(user.getId(), user);
+            return user;
+        }
+        // handle case: update, but not present in storage
+        return usersRepository.computeIfPresent(user.getId(), (id, oldUser) -> user);
+    }
+
+    @Override
+    public boolean delete(int id) {
+        log.info("delete {}", id);
+        return usersRepository.remove(id) != null;
     }
 
     @Override
     public User get(int id) {
         log.info("get {}", id);
-        return null;
+        return usersRepository.get(id);
     }
 
     @Override
     public List<User> getAll() {
         log.info("getAll");
-        return Collections.emptyList();
+        return UsersUtil.listSortedUsers();
     }
+
 
     @Override
     public User getByEmail(String email) {
         log.info("getByEmail {}", email);
-        return null;
+            return users.stream().filter(email::equals).findFirst().orElse(null);
     }
 }

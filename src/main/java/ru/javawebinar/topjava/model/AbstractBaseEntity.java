@@ -1,10 +1,13 @@
 package ru.javawebinar.topjava.model;
 
 public abstract class AbstractBaseEntity {
-    protected Integer id;
+    private Integer id;
 
-    protected AbstractBaseEntity(Integer id) {
+    private Integer userId;
+
+    protected AbstractBaseEntity(Integer id, Integer userId) {
         this.id = id;
+        this.userId = userId;
     }
 
     public void setId(Integer id) {
@@ -15,12 +18,20 @@ public abstract class AbstractBaseEntity {
         return id;
     }
 
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
+
     public boolean isNew() {
-        return this.id == null;
+        return this.id == null && this.userId == null;
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + ":" + id;
+        return getClass().getSimpleName() + ": id=" + id + " userId=" + userId;
     }
 }
