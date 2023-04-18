@@ -19,8 +19,8 @@
             <pattern>%d{HH:mm:ss.SSS} %-5level %class{50}.%M:%L - %msg%n</pattern>
         </encoder>
     </appender>
-
     <logger name="ru.javawebinar.topjava" level="debug"/>
+    <logger name="org.springframework.orm.jpa.JpaTransactionManager" level="debug"/>
 
     <root level="info">
         <appender-ref ref="file"/>
